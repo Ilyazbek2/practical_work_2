@@ -1,0 +1,30 @@
+from flask import Flask
+app = Flask(__name__)
+
+storage = {}
+
+@app.route("/add/<date>/<int:number>")
+def add(date: str, number: int):
+    year, month = date[:4], date[4:6]
+    storage.setdefault(year, {}).setdefault(month, {}).setdefault('total', 0)
+    storage[year][month]['total'] += number
+    return f"Добавлено {number} руб. на дату {date}"
+
+@app.route("/calculate/<int:year>")
+def calculate_year(year: int):
+    year = str(year)
+    if year not in storage:
+        return f"Расходы за {year} не найдены."
+    total = sum(month['total'] for month in storage[year].values())
+    return f"Суммарные расходы за {year}: {total} руб."
+
+@app.route("/calculate/<int:year>/<int:month>")
+def calculate_month(year: int, month: int):
+    year, month = str(year), f"{month:02}"
+    if year not in storage or month not in storage[year]:
+        return f"Расходы за {year}-{month} не найдены."
+    total = storage[year][month]['total']
+    return f"Суммарные расходы за {year}-{month}: {total} руб."
+
+if __name__ == "__main__":
+    app.run(debug=True)
