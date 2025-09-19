@@ -1,0 +1,17 @@
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/max_number/<path:numbers>")
+def max_number(numbers):
+    nums = []
+    for n in numbers.split("/"):
+        try:
+            nums.append(float(n))
+        except ValueError:
+            pass
+    if not nums:
+        return "Нет чисел для сравнения."
+    return f"Максимальное число: <i>{max(nums)}</i>"
+
+if __name__ == "__main__":
+    app.run(debug=True)
