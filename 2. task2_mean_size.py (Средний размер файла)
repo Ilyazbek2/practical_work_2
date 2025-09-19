@@ -1,0 +1,17 @@
+import sys
+
+def get_mean_size(lines):
+    total = 0
+    count = 0
+    for line in lines[1:]:
+        parts = line.split()
+        if len(parts) < 5:
+            continue
+        size = int(parts[4])
+        total += size
+        count += 1
+    return total // count if count else 0
+
+if __name__ == "__main__":
+    lines = sys.stdin.readlines()
+    print(get_mean_size(lines))
